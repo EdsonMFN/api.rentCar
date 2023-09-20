@@ -87,15 +87,6 @@ public class ModelService {
             throw new HandlerErrorException(ex.getMessage());
         }
     }
-    public ResponseModel findById(Long idModel){
-            Model model = repositoryModel.findById(idModel).map(m->m).orElseThrow(() -> new HandlerEntitydadeNotFoundException("not found"));
-
-            return new ResponseModel(ModelDto.builder()
-                    .id(model.getId())
-                    .model(model.getModel()).build());
-
-
-    }
     public ResponseModel delete(Long idModel){
         try {
             Model model = repositoryModel.findById(idModel)

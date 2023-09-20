@@ -25,12 +25,6 @@ public class ModelController {
         List<ResponseModel> responseVehicles = modelService.listVehicle();
         return ResponseEntity.ok(responseVehicles);
     }
-    @GetMapping("/{idModel}")
-    public ResponseEntity<ResponseModel> listarAcademia(@PathVariable Long idModel){
-        ResponseModel responseVehicles = modelService.findById(idModel);
-        return ResponseEntity.ok(responseVehicles);
-    }
-
     @PutMapping("/{idModel}")
     public ResponseEntity<ResponseModel> updateModel(@RequestBody RequestModel requestModel, @PathVariable Long idModel){
         ResponseModel responseModel = modelService.updateModel(requestModel,idModel);
