@@ -1,4 +1,4 @@
-package api.rentCar.entity;
+package api.rentCar.domains.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,6 +29,5 @@ public class Model {
 
     @Column(name = "category")
     private Integer category;
-
 
 }

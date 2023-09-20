@@ -1,20 +1,20 @@
-package api.rentCar.rest.dto;
+package api.rentCar.domains.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class VehicleDto {
+public class ModelDto {
 
     private Long id;
-    private ModelDto modelDto;
-    private String plate;
+    private String model;
+    private Integer modelYear;
+    private String fabricator;
+    private Integer category;
 
 }

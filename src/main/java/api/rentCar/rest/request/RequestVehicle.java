@@ -1,14 +1,10 @@
 package api.rentCar.rest.request;
 
-import api.rentCar.entity.Vehicle;
-import api.rentCar.rest.dto.ModelDto;
-import api.rentCar.rest.dto.VehicleDto;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.LocalDate;
-
 @Data
+@AllArgsConstructor
 public class RequestVehicle {
 
     private Long id;

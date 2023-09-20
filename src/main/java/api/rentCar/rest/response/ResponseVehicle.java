@@ -1,7 +1,6 @@
 package api.rentCar.rest.response;
 
-import api.rentCar.rest.dto.VehicleDto;
-import lombok.Builder;
+import api.rentCar.domains.model.VehicleDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

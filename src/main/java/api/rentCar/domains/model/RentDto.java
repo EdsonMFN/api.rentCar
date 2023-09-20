@@ -1,6 +1,5 @@
-package api.rentCar.rest.dto;
+package api.rentCar.domains.model;
 
-import api.rentCar.entity.Vehicle;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

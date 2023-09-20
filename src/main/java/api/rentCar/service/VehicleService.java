@@ -1,11 +1,11 @@
 package api.rentCar.service;
 
-import api.rentCar.entity.Model;
-import api.rentCar.entity.Vehicle;
-import api.rentCar.repository.RepositoryVehicle;
-import api.rentCar.repository.RepositoryModel;
-import api.rentCar.rest.dto.ModelDto;
-import api.rentCar.rest.dto.VehicleDto;
+import api.rentCar.domains.entity.Model;
+import api.rentCar.domains.entity.Vehicle;
+import api.rentCar.domains.model.ModelDto;
+import api.rentCar.domains.model.VehicleDto;
+import api.rentCar.domains.repository.RepositoryModel;
+import api.rentCar.domains.repository.RepositoryVehicle;
 import api.rentCar.rest.request.RequestVehicle;
 import api.rentCar.rest.response.ResponseVehicle;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,8 +108,8 @@ public class VehicleService {
             responseVehicles.add(responseVehicle);
         });
         return responseVehicles;
-
     }
+
     public ResponseVehicle delete(Long idVehicle){
 
         repositoryVehicle.deleteById(idVehicle);

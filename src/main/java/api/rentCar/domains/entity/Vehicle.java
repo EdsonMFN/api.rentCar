@@ -1,12 +1,9 @@
-package api.rentCar.entity;
+package api.rentCar.domains.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.mapping.ToOne;
-
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "vehicle")

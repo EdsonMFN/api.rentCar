@@ -2,7 +2,6 @@ package api.rentCar.rest.controller;
 
 import api.rentCar.rest.request.RequestModel;
 import api.rentCar.rest.response.ResponseModel;
-import api.rentCar.rest.response.ResponseVehicle;
 import api.rentCar.service.ModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +25,20 @@ public class ModelController {
         List<ResponseModel> responseVehicles = modelService.listVehicle();
         return ResponseEntity.ok(responseVehicles);
     }
+    @GetMapping("/{idModel}")
+    public ResponseEntity<ResponseModel> listarAcademia(@PathVariable Long idModel){
+        ResponseModel responseVehicles = modelService.findById(idModel);
+        return ResponseEntity.ok(responseVehicles);
+    }
 
-    @PutMapping
-    public ResponseEntity<ResponseModel> updateModel(@RequestBody RequestModel requestModel){
-        ResponseModel responseModel = modelService.updateModel(requestModel);
+    @PutMapping("/{idModel}")
+    public ResponseEntity<ResponseModel> updateModel(@RequestBody RequestModel requestModel, @PathVariable Long idModel){
+        ResponseModel responseModel = modelService.updateModel(requestModel,idModel);
         return ResponseEntity.ok(responseModel);
+    }
+    @DeleteMapping("/{idModel}")
+    public ResponseEntity<ResponseModel> deleteVehicle(@PathVariable Long idModel){
+        ResponseModel responseRent = modelService.delete(idModel);
+        return ResponseEntity.noContent().build();
     }
 }

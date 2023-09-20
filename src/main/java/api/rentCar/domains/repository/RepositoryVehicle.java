@@ -1,7 +1,7 @@
-package api.rentCar.repository;
+package api.rentCar.domains.repository;
 
-import api.rentCar.entity.Model;
-import api.rentCar.entity.Vehicle;
+import api.rentCar.domains.entity.Model;
+import api.rentCar.domains.entity.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

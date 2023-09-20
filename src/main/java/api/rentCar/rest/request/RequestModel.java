@@ -1,6 +1,5 @@
 package api.rentCar.rest.request;
 
-import api.rentCar.entity.Vehicle;
 import lombok.Data;
 
 @Data

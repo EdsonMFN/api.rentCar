@@ -1,7 +1,6 @@
 package api.rentCar.rest.request;
 
-import api.rentCar.rest.dto.ModelDto;
-import api.rentCar.rest.dto.VehicleDto;
+import api.rentCar.domains.model.VehicleDto;
 import lombok.Data;
 
 import java.time.LocalDate;

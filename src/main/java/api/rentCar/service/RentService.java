@@ -1,16 +1,15 @@
 package api.rentCar.service;
 
-import api.rentCar.entity.Rent;
-import api.rentCar.entity.Vehicle;
-import api.rentCar.repository.RepositoryModel;
-import api.rentCar.repository.RepositoryRent;
-import api.rentCar.repository.RepositoryVehicle;
-import api.rentCar.rest.dto.ModelDto;
-import api.rentCar.rest.dto.RentDto;
-import api.rentCar.rest.dto.VehicleDto;
+import api.rentCar.domains.entity.Rent;
+import api.rentCar.domains.entity.Vehicle;
+import api.rentCar.domains.repository.RepositoryModel;
+import api.rentCar.domains.repository.RepositoryRent;
+import api.rentCar.domains.repository.RepositoryVehicle;
+import api.rentCar.domains.model.ModelDto;
+import api.rentCar.domains.model.RentDto;
+import api.rentCar.domains.model.VehicleDto;
 import api.rentCar.rest.request.RequestRent;
 import api.rentCar.rest.response.ResponseRent;
-import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.lang.*;
