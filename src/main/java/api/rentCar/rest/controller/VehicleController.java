@@ -1,11 +1,9 @@
 package api.rentCar.rest.controller;
 
 import api.rentCar.rest.request.RequestVehicle;
-import api.rentCar.rest.response.ResponseModel;
 import api.rentCar.rest.response.ResponseVehicle;
 import api.rentCar.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +16,9 @@ public class VehicleController {
     @Autowired
     private VehicleService vehicleService;
 
-    @PostMapping
-    public ResponseEntity<ResponseVehicle> createVehicle(@RequestBody RequestVehicle requestVehicle){
-        ResponseVehicle responseVehicle = vehicleService.createVehicle(requestVehicle);
+    @PostMapping("/{nameModel}")
+    public ResponseEntity<ResponseVehicle> createVehicle(@RequestBody RequestVehicle requestVehicle, @PathVariable String nameModel){
+        ResponseVehicle responseVehicle = vehicleService.createVehicle(requestVehicle,nameModel);
         return ResponseEntity.ok(responseVehicle);
     }
     @GetMapping

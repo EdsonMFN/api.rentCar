@@ -6,13 +6,18 @@ import api.rentCar.domains.model.ModelDto;
 import api.rentCar.domains.model.VehicleDto;
 import api.rentCar.domains.repository.RepositoryModel;
 import api.rentCar.domains.repository.RepositoryVehicle;
+import api.rentCar.exceptions.handlers.HandlerDataIntegrityViolationException;
+import api.rentCar.exceptions.handlers.HandlerEntitydadeNotFoundException;
+import api.rentCar.exceptions.handlers.HandlerErrorException;
 import api.rentCar.rest.request.RequestVehicle;
 import api.rentCar.rest.response.ResponseVehicle;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VehicleService {
@@ -22,100 +27,130 @@ public class VehicleService {
     @Autowired
     private RepositoryModel repositoryModel;
 
-    public ResponseVehicle createVehicle(RequestVehicle requestVehicle){
+    public ResponseVehicle createVehicle(RequestVehicle requestVehicle,String nameModel){
 
-        Model model = repositoryModel.getReferenceByModel(requestVehicle.getModel());
+       try {
+           Model model = Optional.of(repositoryModel.findByModel(nameModel))
+                   .orElseThrow(() -> new HandlerEntitydadeNotFoundException("entity with name "+ nameModel +" not found"));
 
-        Vehicle vehicle = new Vehicle();
-        vehicle.setPlate(requestVehicle.getPlate());
-        vehicle.setModel(model);
-        repositoryVehicle.save(vehicle);
+           Vehicle vehicle = new Vehicle();
+           vehicle.setPlate(requestVehicle.getPlate());
+           vehicle.setModel(model);
+           repositoryVehicle.save(vehicle);
 
-        ModelDto modelDto = ModelDto.builder()
-                .id(model.getId())
-                .model(model.getModel())
-                .modelYear(model.getModelYear())
-                .fabricator(model.getFabricator())
-                .category(model.getCategory())
-                .build();
+           ModelDto modelDto = ModelDto.builder()
+                   .id(model.getId())
+                   .model(model.getModel())
+                   .modelYear(model.getModelYear())
+                   .fabricator(model.getFabricator())
+                   .category(model.getCategory())
+                   .build();
 
-        return new ResponseVehicle(VehicleDto.builder()
-                .id(vehicle.getId())
-                .modelDto(modelDto)
-                .plate(vehicle.getPlate())
-                .build());
-    }
-    public List<ResponseVehicle> listVehicle(){
-
-       List <Vehicle> vehicles = repositoryVehicle.findAll();
-       List<ResponseVehicle> responseVehicles = new ArrayList<>();
-
-
-        vehicles.forEach( vehicle -> {
-
-            var model = vehicle.getModel();
-
-            ModelDto modelDto = ModelDto.builder()
-                    .id(model.getId())
-                    .model(model.getModel())
-                    .modelYear(model.getModelYear())
-                    .fabricator(model.getFabricator())
-                    .category(model.getCategory())
-                    .build();
-
-           ResponseVehicle responseVehicle =new ResponseVehicle (VehicleDto.builder()
+           return new ResponseVehicle(VehicleDto.builder()
                    .id(vehicle.getId())
                    .modelDto(modelDto)
                    .plate(vehicle.getPlate())
                    .build());
 
-           responseVehicles.add(responseVehicle);
-       });
-       return responseVehicles;
+       }catch (HandlerEntitydadeNotFoundException ex){
+        throw new HandlerEntitydadeNotFoundException(ex.getMessage());
+        }
+        catch (Exception ex){
+            throw new HandlerErrorException(ex.getMessage());
+        }
+    }
+    public List<ResponseVehicle> listVehicle(){
+
+      try {
+          List <Vehicle> vehicles = repositoryVehicle.findAll();
+          List<ResponseVehicle> responseVehicles = new ArrayList<>();
+
+          vehicles.forEach( vehicle -> {
+
+              var model = vehicle.getModel();
+
+              ModelDto modelDto = ModelDto.builder()
+                      .id(model.getId())
+                      .model(model.getModel())
+                      .modelYear(model.getModelYear())
+                      .fabricator(model.getFabricator())
+                      .category(model.getCategory())
+                      .build();
+
+              ResponseVehicle responseVehicle =new ResponseVehicle (VehicleDto.builder()
+                      .id(vehicle.getId())
+                      .modelDto(modelDto)
+                      .plate(vehicle.getPlate())
+                      .build());
+
+              responseVehicles.add(responseVehicle);
+          });
+          return responseVehicles;
+
+      }catch (Exception ex){
+          throw new HandlerErrorException(ex.getMessage());
+      }
+
     }
     public List<ResponseVehicle> searchByCategory(Integer category) {
 
-        List<Model> models = repositoryModel.findAllByCategory(category);
-        List<ResponseVehicle> responseVehicles = new ArrayList<>();
+        try {
+            List<Model> models = Optional.of(repositoryModel.findAllByCategory(category))
+                    .orElseThrow(() -> new HandlerEntitydadeNotFoundException("entity with category "+ category +" not found"));
 
-        List<Vehicle> vehicles = new ArrayList<>();
+            List<ResponseVehicle> responseVehicles = new ArrayList<>();
 
-        models.forEach(model -> {
+            List<Vehicle> vehicles = new ArrayList<>();
 
-            List<Vehicle> vehiclesLambd = vehicles;
-            vehiclesLambd = repositoryVehicle.findByModel(model);
+            models.forEach(model -> {
 
-            vehicles.addAll(vehiclesLambd);
-        });
+                List<Vehicle> vehiclesLambd = vehicles;
+                vehiclesLambd = repositoryVehicle.findByModel(model);
+                vehicles.addAll(vehiclesLambd);
+            });
 
-        vehicles.forEach(vehicle -> {
-            var model = vehicle.getModel();
+            vehicles.forEach(vehicle -> {
+                var model = vehicle.getModel();
 
-            ModelDto modelDto = ModelDto.builder()
-                    .id(model.getId())
-                    .model(model.getModel())
-                    .modelYear(model.getModelYear())
-                    .fabricator(model.getFabricator())
-                    .category(model.getCategory())
-                    .build();
+                ModelDto modelDto = ModelDto.builder()
+                        .id(model.getId())
+                        .model(model.getModel())
+                        .modelYear(model.getModelYear())
+                        .fabricator(model.getFabricator())
+                        .category(model.getCategory())
+                        .build();
 
-            ResponseVehicle responseVehicle = new ResponseVehicle(VehicleDto.builder()
-                    .id(vehicle.getId())
-                    .modelDto(modelDto)
-                    .plate(vehicle.getPlate())
-                    .build());
+                ResponseVehicle responseVehicle = new ResponseVehicle(VehicleDto.builder()
+                        .id(vehicle.getId())
+                        .modelDto(modelDto)
+                        .plate(vehicle.getPlate())
+                        .build());
 
-            responseVehicles.add(responseVehicle);
-        });
-        return responseVehicles;
+                responseVehicles.add(responseVehicle);
+            });
+            return responseVehicles;
+        }catch (HandlerEntitydadeNotFoundException ex){
+            throw new HandlerEntitydadeNotFoundException(ex.getMessage());
+        }
+        catch (Exception ex){
+            throw new HandlerErrorException(ex.getMessage());
+        }
     }
 
     public ResponseVehicle delete(Long idVehicle){
 
-        repositoryVehicle.deleteById(idVehicle);
+        Vehicle vehicle = repositoryVehicle.findById(idVehicle)
+                .orElseThrow(() -> new HandlerEntitydadeNotFoundException("entity with id "+ idVehicle +" not found"));
+        try {
+            repositoryVehicle.deleteById(vehicle.getId());
 
-        ResponseVehicle responseVehicle = new ResponseVehicle();
+            ResponseVehicle responseVehicle = new ResponseVehicle();
+            return  responseVehicle;
 
-        return responseVehicle;
+        }catch (DataIntegrityViolationException ex){
+            throw new HandlerDataIntegrityViolationException(ex.getMessage());
+        }catch (Exception ex){
+            throw new HandlerErrorException(ex.getMessage());
+        }
     }
 }

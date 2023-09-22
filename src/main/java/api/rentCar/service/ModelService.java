@@ -25,6 +25,7 @@ public class ModelService {
 
     public ResponseModel createValueVehicle(RequestModel requestModel){
 
+    try {
         Model model = new Model();
         model.setModel(requestModel.getModel());
         model.setModelYear(requestModel.getModelYear());
@@ -40,33 +41,40 @@ public class ModelService {
                 .category(model.getCategory())
                 .build());
 
+    }catch (Exception ex){
+        throw new HandlerErrorException(ex.getMessage());
+    }
     }
     public List<ResponseModel> listVehicle(){
-        List <Model> models = repositoryModel.findAll();
-        List<ResponseModel> responseModels = new ArrayList<>();
+        try {
+            List <Model> models = repositoryModel.findAll();
+            List<ResponseModel> responseModels = new ArrayList<>();
 
 
-        models.forEach(model -> {
+            models.forEach(model -> {
 
-            ResponseModel responseModel =new ResponseModel(ModelDto.builder()
-                    .id(model.getId())
-                    .model(model.getModel())
-                    .modelYear(model.getModelYear())
-                    .fabricator(model.getFabricator())
-                    .category(model.getCategory())
-                    .build());
+                ResponseModel responseModel =new ResponseModel(ModelDto.builder()
+                        .id(model.getId())
+                        .model(model.getModel())
+                        .modelYear(model.getModelYear())
+                        .fabricator(model.getFabricator())
+                        .category(model.getCategory())
+                        .build());
 
-            responseModels.add(responseModel);
-        });
-        return responseModels;
+                responseModels.add(responseModel);
+            });
+            return responseModels;
+        }catch (Exception ex){
+            throw new HandlerErrorException(ex.getMessage());
+        }
     }
 
     public ResponseModel updateModel(RequestModel requestModel, Long idModel) {
 
-        try {
+
             Model model = repositoryModel.findById(idModel)
                     .orElseThrow(() -> new HandlerEntitydadeNotFoundException("entity with id "+ idModel+" not found"));
-
+        try {
             model.setModel(requestModel.getModel());
             model.setModelYear(requestModel.getModelYear());
             model.setFabricator(requestModel.getFabricator());
@@ -81,27 +89,23 @@ public class ModelService {
                     .category(model.getCategory())
                     .build());
 
-        } catch (HandlerEntitydadeNotFoundException ex) {
-            throw new HandlerEntitydadeNotFoundException(ex.getMessage());
-        }catch (Exception ex){
+        } catch (Exception ex){
             throw new HandlerErrorException(ex.getMessage());
         }
     }
     public ResponseModel delete(Long idModel){
-        try {
+
             Model model = repositoryModel.findById(idModel)
                     .orElseThrow(() -> new HandlerEntitydadeNotFoundException("entity with id "+ idModel+" not found"));
-
-            repositoryModel.delete(model);
+            try {
+            repositoryModel.deleteById(model.getId());
 
             ResponseModel responseModel = new ResponseModel();
 
             return responseModel;
 
         }catch (DataIntegrityViolationException ex){
-            throw new HandlerDataIntegrityViolationException("Could not be deleted because there are related entities");
-        }catch (HandlerEntitydadeNotFoundException ex) {
-            throw new HandlerEntitydadeNotFoundException(ex.getMessage());
+            throw new HandlerDataIntegrityViolationException(ex.getMessage());
         }catch (Exception ex){
             throw new HandlerErrorException(ex.getMessage());
         }
