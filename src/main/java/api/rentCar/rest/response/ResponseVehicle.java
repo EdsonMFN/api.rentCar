@@ -2,10 +2,8 @@ package api.rentCar.rest.response;
 
 import api.rentCar.domains.model.VehicleDto;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 public class ResponseVehicle {
 
     private VehicleDto vehicleDto;
@@ -14,4 +12,6 @@ public class ResponseVehicle {
         this.vehicleDto = vehicleDto;
     }
 
+    public ResponseVehicle() {
+    }
 }

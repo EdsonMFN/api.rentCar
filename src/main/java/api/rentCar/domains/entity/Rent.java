@@ -21,26 +21,23 @@ public class Rent {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "vehicle")
+    @JoinColumn(name = "vehicle", nullable = false)
     private Vehicle vehicle;
 
-    @Column(name = "dateWithdrawal")
+    @Column(name = "dateWithdrawal", nullable = false)
     private LocalDate dateWithdrawal;
 
-    @Column(name = "dateDelivery")
+    @Column(name = "dateDelivery", nullable = false)
     private LocalDate dateDelivery;
 
-    @Column(name = "value_weekday")
+    @Column(name = "value_weekday", nullable = false)
     private Integer valueWeekday;
 
-    @Column(name = "value_weekenday")
+    @Column(name = "value_weekenday", nullable = false)
     private Integer valueWeekenday;
 
     @Column(name = "rentAmount")
     private Integer rentAmount;
 
-    public LocalDate dateWithdrawal(){
-        return dateWithdrawal = LocalDate.now();
-    }
 
 }

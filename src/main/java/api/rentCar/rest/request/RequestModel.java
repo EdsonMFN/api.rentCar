@@ -1,5 +1,6 @@
 package api.rentCar.rest.request;
 
+import api.rentCar.enums.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,5 +12,5 @@ public class RequestModel {
     private String model;
     private Integer modelYear;
     private String fabricator;
-    private Integer category;
+    private Category category;
 }

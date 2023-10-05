@@ -67,7 +67,7 @@ public class VehicleServiceTest {
 
         modelDto = new ModelDto(1L,"Cronos 1.2 8V Flex",2018,"Fiat",1);
         vehicleDto = new VehicleDto(1L,modelDto,"rio2o23");
-        requestVehicle = new RequestVehicle(1L,"Cronos 1.2 8V Flex","rio2o23");
+        requestVehicle = new RequestVehicle(1L,"rio2o23");
 
         ResponseVehicle responseVehicle = new ResponseVehicle(VehicleDto.builder()
                 .id(vehicle.getId())

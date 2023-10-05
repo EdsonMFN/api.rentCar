@@ -13,8 +13,11 @@ import api.rentCar.exceptions.handlers.HandlerEntitydadeNotFoundException;
 import api.rentCar.exceptions.handlers.HandlerErrorException;
 import api.rentCar.rest.request.RequestRent;
 import api.rentCar.rest.response.ResponseRent;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -34,23 +37,30 @@ public class RentService {
     private RepositoryModel repositoryModel;
     @Autowired
     private RepositoryRent repositoryRent;
-
+    @Autowired
+    private KafkaTemplate<String,String> kafkaTemplate;
 
     public ResponseRent createRent(RequestRent requestRent, String plate){
-
 
         Vehicle vehicle = Optional.ofNullable(repositoryVehicle.findByPlate(plate))
                 .orElseThrow(() -> new HandlerEntitydadeNotFoundException("entity with id "+ plate +" not found"));
         try {
             Rent rent = new Rent();
             rent.setVehicle(vehicle);
-            rent.setDateWithdrawal(LocalDate.now());
+            rent.setDateWithdrawal(requestRent.getDateWithdrawal());
             rent.setDateDelivery(requestRent.getDateDelivery());
             rent.setValueWeekday(requestRent.getValueWeekday());
             rent.setValueWeekenday(requestRent.getValueWeekenday());
             rent.setRentAmount(rentValueTotal(rent.getValueWeekday(), rent.getValueWeekenday(), rent.getDateWithdrawal(), rent.getDateDelivery()));
             repositoryRent.save(rent);
 
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+
+            var stringRent = objectMapper.writeValueAsString(rent);
+
+            this.kafkaTemplate.send("test.kafka2",stringRent);
+            //Produzir conteudo pro kafka
             var model = vehicle.getModel();
 
             ModelDto modelDto = ModelDto.builder()

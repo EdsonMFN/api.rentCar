@@ -19,10 +19,10 @@ public class Vehicle {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "model")
+    @JoinColumn(name = "model", nullable = false)
     private Model model;
 
-    @Column(name = "plate")
+    @Column(name = "plate", nullable = false)
     private String plate;
 
 }

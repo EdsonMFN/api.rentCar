@@ -1,5 +1,6 @@
 package api.rentCar.domains.entity;
 
+import api.rentCar.enums.Category;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,16 +19,17 @@ public class Model {
     @PrimaryKeyJoinColumns(value = @PrimaryKeyJoinColumn )
     private Long id;
 
-    @Column(name = "model")
+    @Column(name = "model", nullable = false)
     private String model;
 
-    @Column(name = "modelYear")
+    @Column(name = "modelYear", nullable = false)
     private Integer modelYear;
 
-    @Column(name = "fabricator")
+    @Column(name = "fabricator", nullable = false)
     private String fabricator;
 
-    @Column(name = "category")
-    private Integer category;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category", nullable = false)
+    private Category category;
 
 }
