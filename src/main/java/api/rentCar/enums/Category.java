@@ -1,8 +1,10 @@
 package api.rentCar.enums;
 
-import java.util.IllformedLocaleException;
+import lombok.Getter;
+
 import java.util.stream.Stream;
 
+@Getter
 public enum Category {
 
     COMPACT_HATCH(1, "Compact Hatch"),
@@ -19,23 +21,16 @@ public enum Category {
         this.desciption = desciption;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public String getDesciption() {
-        return desciption;
-    }
     public static Category findById(Integer id){
         return Stream.of(Category.values())
                 .filter(value -> value.getId().equals(id))
                 .findFirst()
-                .orElseThrow(() -> new IllformedLocaleException(String.format("Categoria %s não localizada",id)));
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Categoria %s not found",id)));
     }
     public static Category findByDescription(String desciption){
         return Stream.of(Category.values())
                 .filter(value -> value.getDesciption().equals(desciption))
                 .findFirst()
-                .orElseThrow(() -> new IllformedLocaleException(String.format("Categoria %s não localizada",desciption)));
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Categoria %s not found",desciption)));
     }
 }
