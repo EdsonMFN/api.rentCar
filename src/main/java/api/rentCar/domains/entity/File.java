@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Base64;
-
 @Entity()
 @Table(name = "files")
 @Data
@@ -25,5 +23,5 @@ public class File {
     private TypeFile typeFile;
 
     @Column(name = "base64")
-    private Base64 base64;
+    private String base64;
 }
