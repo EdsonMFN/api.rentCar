@@ -54,13 +54,7 @@ public class RentService {
             rent.setRentAmount(rentValueTotal(rent.getValueWeekday(), rent.getValueWeekenday(), rent.getDateWithdrawal(), rent.getDateDelivery()));
             repositoryRent.save(rent);
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
 
-            var stringRent = objectMapper.writeValueAsString(rent);
-
-            this.kafkaTemplate.send("test.kafka2",stringRent);
-            //Produzir conteudo pro kafka
             var model = vehicle.getModel();
 
             ModelDto modelDto = ModelDto.builder()
@@ -77,15 +71,30 @@ public class RentService {
                     .plate(vehicle.getPlate())
                     .build();
 
-            return new ResponseRent(RentDto.builder()
+            RentDto rentDto = RentDto.builder()
                     .id(rent.getId())
-                    .dateWithdrawal(LocalDate.now())
-                    .dateDelivery(rent.getDateDelivery())
+                    .dateWithdrawal(String.valueOf(rent.getDateWithdrawal()))
+                    .dateDelivery(String.valueOf(rent.getDateDelivery()))
                     .valueWeekday(rent.getValueWeekday())
                     .valueWeekenday(rent.getValueWeekenday())
                     .vehicleDto(vehicleDto)
                     .rentAmount(rent.getRentAmount())
-                    .build());
+                    .build();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+
+            var stringRent = objectMapper.writeValueAsString(rentDto);
+
+            this.kafkaTemplate.send("test.kafka2",stringRent);
+            //Produzir conteudo pro kafka
+
+            ResponseRent responseRent = new ResponseRent();
+            responseRent.setRentDto(rentDto);
+
+
+            return responseRent;
+
         }catch (Exception ex){
         throw new HandlerErrorException(ex.getMessage());
     }
@@ -99,8 +108,8 @@ public class RentService {
 
             ResponseRent responseRent = new ResponseRent (RentDto.builder()
                     .id(rent.getId())
-                    .dateWithdrawal(rent.getDateWithdrawal())
-                    .dateDelivery(rent.getDateDelivery())
+                    .dateWithdrawal(String.valueOf(rent.getDateWithdrawal()))
+                    .dateDelivery(String.valueOf(rent.getDateDelivery()))
                     .valueWeekday(rent.getValueWeekday())
                     .valueWeekenday(rent.getValueWeekenday())
                     .rentAmount(rent.getRentAmount())

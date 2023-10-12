@@ -26,6 +26,7 @@ public class FileXlsx {
 
              int lineCounter = 0;
 
+            addHeader1(rentalReport, lineCounter++);
             addHeader(rentalReport, lineCounter++);
 
             for (Rent rent : rents){
@@ -46,15 +47,19 @@ public class FileXlsx {
         log.info("file " + nameFile + " generated successfully");
     }
 
-    private void addHeader(XSSFSheet rentalReport, int lineCounter) {
+    private void addHeader(XSSFSheet rentalReport,int lineCounter) {
         var row = rentalReport.createRow(lineCounter);
-        addCell(row,0,"id");
-        addCell(row,1,"model");
-        addCell(row,2,"plate");
-        addCell(row,3,"dateWithdrawal");
-        addCell(row,4,"dateDelivery");
-        addCell(row,5,"rentAmount");
+        addCell(row,0,"Id");
+        addCell(row,1,"Model");
+        addCell(row,2,"Plate");
+        addCell(row,3,"Date Withdrawal");
+        addCell(row,4,"Date Delivery");
+        addCell(row,5,"Rent Amount");
 
+    }
+    private void addHeader1(XSSFSheet rentalReport,int lineCounter) {
+        var row = rentalReport.createRow(lineCounter);
+        addCell(row,0,"Report of all car rentals from the rental company");
     }
     private void addCell (Row row,int column, String value){
         Cell cell= row.createCell(column);

@@ -16,17 +16,17 @@ public class KafkaConsumer {
     @Autowired
     private RentService rentService;
 
-    @KafkaListener(topics = "test.kafka2",groupId = "kafka")
-    public void consumer(String json, @Header(KafkaHeaders.OFFSET) Long offset,@Header(KafkaHeaders.TOPIC)String topicKafka,@Header(KafkaHeaders.GROUP_ID)String groupIdKafka){
+    @KafkaListener(topics = "test.kafka2",groupId = "api.rentCar.group.consumer")
+    public void consumer(String json, @Header(KafkaHeaders.OFFSET) Long offset){
 
-        log.info("--> Consumindo fila. Topico: {} - Grupo: {} .", topicKafka, groupIdKafka );
-        log.info("CampanhaPortadorEnvioConsumer received. Offset: {}  - payload: {} ", offset, json);
+//        log.info("--> Consumindo fila. Topico: {} - Grupo: {} .", topicKafka, groupIdKafka );
+        log.info("kafkaConsumer received. Offset: {}  - payload: {} ", offset, json);
 
         Rent rent = null;
         try {
             rent = new ObjectMapper().readValue(json, Rent.class);
         } catch (Exception e) {
-            throw new RuntimeException("erro no consumer");
+            throw new RuntimeException("erro no consumer", e);
         }
     }
 }

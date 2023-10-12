@@ -27,8 +27,8 @@ public class PaymentController {
         return ResponseEntity.ok(responsePaymentList);
     }
     @DeleteMapping("/{idPayment}")
-    public ResponseEntity<ResponsePayment> deleteVehicle(@PathVariable Long idPayment){
-         paymentService.delete(idPayment);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> deleteVehicle(@PathVariable Long idPayment){
+        String responsePayment = paymentService.delete(idPayment);
+        return ResponseEntity.ok(responsePayment);
     }
 }

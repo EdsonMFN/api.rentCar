@@ -18,10 +18,10 @@ public class File {
     @PrimaryKeyJoinColumns(value = {@PrimaryKeyJoinColumn})
     private Long id;
 
-    @Column(name = "Type_file")
+    @Column(name = "Type_file",nullable = false)
     @Enumerated(EnumType.STRING)
     private TypeFile typeFile;
 
-    @Column(name = "base64")
+    @Column(name = "base64",nullable = false)
     private String base64;
 }

@@ -102,16 +102,15 @@ public class PaymentService {
         throw new HandlerErrorException(ex.getMessage());
     }
     }
-    public ResponsePayment delete(Long idPayment){
+    public String delete(Long idPayment){
         Payment payment = repositoryPayment.findById(idPayment)
                 .orElseThrow(() -> new HandlerEntitydadeNotFoundException("entity with id "+ idPayment+" not found"));
        try {
            repositoryPayment.deleteById(payment.getId());
 
            ResponsePayment responsePayment = new ResponsePayment();
-           responsePayment.msgDelet();
 
-           return responsePayment;
+           return responsePayment.msgDelet();
 
        }catch (DataIntegrityViolationException ex){
         throw new HandlerDataIntegrityViolationException(ex.getMessage());
