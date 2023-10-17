@@ -1,6 +1,6 @@
 package api.rentCar.kafka;
 
-import api.rentCar.domains.entity.Rent;
+import api.rentCar.domains.model.RentDto;
 import api.rentCar.service.RentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +22,9 @@ public class KafkaConsumer {
 //        log.info("--> Consumindo fila. Topico: {} - Grupo: {} .", topicKafka, groupIdKafka );
         log.info("kafkaConsumer received. Offset: {}  - payload: {} ", offset, json);
 
-        Rent rent = null;
+        RentDto rent = null;
         try {
-            rent = new ObjectMapper().readValue(json, Rent.class);
+            rent = new ObjectMapper().readValue(json, RentDto.class);
         } catch (Exception e) {
             throw new RuntimeException("erro no consumer", e);
         }

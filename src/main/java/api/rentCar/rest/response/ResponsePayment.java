@@ -17,5 +17,8 @@ public class ResponsePayment {
     public String msgDelet() {
         return "payment deleted successfully";
     }
+    public String msgFailDelet() {
+        return "Could not delete";
+    }
 
 }
