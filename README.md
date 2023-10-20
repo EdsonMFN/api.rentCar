@@ -6,5 +6,6 @@ Aplicação de sistema de aluguel de carros.
 - Spring boot;
 - Geração de arquivo Xlsx;
 - Kafka;
+- MySql;
 - JPA/Hibernate;
-- Testes Unitários;
+- Testes Unitários.
