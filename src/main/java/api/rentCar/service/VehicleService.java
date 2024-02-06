@@ -27,12 +27,10 @@ public class VehicleService {
     @Autowired
     private RepositoryModel repositoryModel;
 
-    public ResponseVehicle createVehicle(RequestVehicle requestVehicle,String nameModel){
-
+    public ResponseVehicle createVehicle(RequestVehicle requestVehicle,Long idModel){
+        Model model = repositoryModel.findById(idModel)
+                .orElseThrow(() -> new HandlerEntitydadeNotFoundException("entity with name "+ idModel +" not found"));
        try {
-           Model model = Optional.of(repositoryModel.findByModel(nameModel))
-                   .orElseThrow(() -> new HandlerEntitydadeNotFoundException("entity with name "+ nameModel +" not found"));
-
            Vehicle vehicle = new Vehicle();
            vehicle.setPlate(requestVehicle.getPlate());
            vehicle.setModel(model);
@@ -137,15 +135,12 @@ public class VehicleService {
         }
     }
 
-    public ResponseVehicle delete(Long idVehicle){
+    public void delete(Long idVehicle){
 
         Vehicle vehicle = repositoryVehicle.findById(idVehicle)
                 .orElseThrow(() -> new HandlerEntitydadeNotFoundException("entity with id "+ idVehicle +" not found"));
         try {
             repositoryVehicle.deleteById(vehicle.getId());
-
-            ResponseVehicle responseVehicle = new ResponseVehicle();
-            return  responseVehicle;
 
         }catch (DataIntegrityViolationException ex){
             throw new HandlerDataIntegrityViolationException(ex.getMessage());

@@ -4,6 +4,8 @@ import api.rentCar.rest.request.RequestVehicle;
 import api.rentCar.rest.response.ResponseVehicle;
 import api.rentCar.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +18,10 @@ public class VehicleController {
     @Autowired
     private VehicleService vehicleService;
 
-    @PostMapping("/{nameModel}")
-    public ResponseEntity<ResponseVehicle> createVehicle(@RequestBody RequestVehicle requestVehicle, @PathVariable String nameModel){
-        ResponseVehicle responseVehicle = vehicleService.createVehicle(requestVehicle,nameModel);
-        return ResponseEntity.ok(responseVehicle);
+    @PostMapping("/{idModel}")
+    public ResponseEntity<ResponseVehicle> createVehicle(@RequestBody RequestVehicle requestVehicle, @PathVariable Long idModel){
+        ResponseVehicle responseVehicle = vehicleService.createVehicle(requestVehicle,idModel);
+        return ResponseEntity.status(HttpStatus.OK).body(responseVehicle);
     }
     @GetMapping
     public ResponseEntity<List<ResponseVehicle>> listarAcademia(){
@@ -29,11 +31,11 @@ public class VehicleController {
     @GetMapping("/category/{category}")
     public ResponseEntity<List<ResponseVehicle>> searchByVehicle(@PathVariable Integer category){
         List<ResponseVehicle> responseVehicles = vehicleService.searchByCategory(category);
-        return ResponseEntity.ok(responseVehicles);
+        return ResponseEntity.status(HttpStatus.OK).body(responseVehicles);
     }
     @DeleteMapping("/{idVehicle}")
-    public ResponseEntity<ResponseVehicle> deleteVehicle(@PathVariable Long idVehicle){
-        ResponseVehicle responseVehicle = vehicleService.delete(idVehicle);
+    public ResponseEntity<?> deleteVehicle(@PathVariable Long idVehicle){
+        vehicleService.delete(idVehicle);
         return ResponseEntity.noContent().build();
     }
 }

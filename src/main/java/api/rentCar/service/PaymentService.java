@@ -13,8 +13,11 @@ import api.rentCar.exceptions.handlers.HandlerEntitydadeNotFoundException;
 import api.rentCar.exceptions.handlers.HandlerErrorException;
 import api.rentCar.rest.request.RequestPayment;
 import api.rentCar.rest.response.ResponsePayment;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,8 +35,8 @@ public class PaymentService {
     @Autowired
     private RepositoryPayment repositoryPayment;
 
-//    @Autowired
-//    private KafkaTemplate<String,String> kafkaTemplate;
+    @Autowired
+    private KafkaTemplate<String,String> kafkaTemplate;
 
     public ResponsePayment createPayment(RequestPayment requestPayment, Long idRent){
 
@@ -47,13 +50,13 @@ public class PaymentService {
             payment.setRent(rent);
             repositoryPayment.save(payment);
 
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            objectMapper.registerModule(new JavaTimeModule());
-//
-//            var stringPayment = objectMapper.writeValueAsString(payment);
-//
-//            this.kafkaTemplate.send("test.kafka2",stringPayment);
-            //Produzir conteudo pro kafka
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+
+            var stringPayment = objectMapper.writeValueAsString(payment);
+
+            this.kafkaTemplate.send("test.kafka2",stringPayment);
+//            Produzir conteudo pro kafka
             RentDto rentDto = RentDto.builder()
                     .id(rent.getId())
                     .rentAmount(rent.getRentAmount())
@@ -102,15 +105,11 @@ public class PaymentService {
         throw new HandlerErrorException(ex.getMessage());
     }
     }
-    public String delete(Long idPayment){
+    public void delete(Long idPayment){
         Payment payment = repositoryPayment.findById(idPayment)
                 .orElseThrow(() -> new HandlerEntitydadeNotFoundException("entity with id "+ idPayment+" not found"));
        try {
            repositoryPayment.deleteById(payment.getId());
-
-           ResponsePayment responsePayment = new ResponsePayment();
-
-           return responsePayment.msgDelet();
 
        }catch (DataIntegrityViolationException ex){
         throw new HandlerDataIntegrityViolationException(ex.getMessage());

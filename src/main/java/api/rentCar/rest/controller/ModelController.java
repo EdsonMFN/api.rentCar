@@ -31,8 +31,8 @@ public class ModelController {
         return ResponseEntity.ok(responseModel);
     }
     @DeleteMapping("/{idModel}")
-    public ResponseEntity<ResponseModel> deleteVehicle(@PathVariable Long idModel){
-        ResponseModel responseRent = modelService.delete(idModel);
+    public ResponseEntity<?> deleteVehicle(@PathVariable Long idModel){
+
         return ResponseEntity.noContent().build();
     }
 }

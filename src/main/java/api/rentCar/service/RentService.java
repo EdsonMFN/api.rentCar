@@ -24,7 +24,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,9 +41,9 @@ public class RentService {
 
     public ResponseRent createRent(RequestRent requestRent, String plate){
 
-        Vehicle vehicle = Optional.ofNullable(repositoryVehicle.findByPlate(plate))
-                .orElseThrow(() -> new HandlerEntitydadeNotFoundException("entity with id "+ plate +" not found"));
         try {
+            Vehicle vehicle = repositoryVehicle.findByPlate(plate);
+
             Rent rent = new Rent();
             rent.setVehicle(vehicle);
             rent.setDateWithdrawal(requestRent.getDateWithdrawal());
@@ -122,15 +121,11 @@ public class RentService {
         throw new HandlerErrorException(ex.getMessage());
     }
     }
-    public ResponseRent delete(Long idRent){
+    public void delete(Long idRent){
         Rent rent = repositoryRent.findById(idRent)
                 .orElseThrow(() -> new HandlerEntitydadeNotFoundException("entity with id "+ idRent+" not found"));
        try {
            repositoryRent.deleteById(rent.getId());
-
-           ResponseRent responseRent = new ResponseRent();
-
-           return responseRent;
 
        }catch (DataIntegrityViolationException ex){
         throw new HandlerDataIntegrityViolationException(ex.getMessage());

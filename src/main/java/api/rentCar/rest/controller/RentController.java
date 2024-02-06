@@ -4,6 +4,7 @@ import api.rentCar.rest.request.RequestRent;
 import api.rentCar.rest.response.ResponseRent;
 import api.rentCar.service.RentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class RentController {
     @PostMapping("/plate/{plate}")
     public ResponseEntity<ResponseRent> createVehicle(@RequestBody RequestRent requestRent, @PathVariable String plate){
         ResponseRent responseRent = rentService.createRent(requestRent, plate);
-        return ResponseEntity.ok(responseRent);
+        return ResponseEntity.status(HttpStatus.OK).body(responseRent);
     }
     @GetMapping
     public ResponseEntity<List<ResponseRent>> listarAcademia(){
@@ -27,8 +28,8 @@ public class RentController {
         return ResponseEntity.ok(responseRents);
     }
     @DeleteMapping("/{idRent}")
-    public ResponseEntity<ResponseRent> deleteVehicle(@PathVariable Long idRent){
-        ResponseRent responseRent = rentService.delete(idRent);
-        return ResponseEntity.ok(responseRent);
+    public ResponseEntity<?> deleteVehicle(@PathVariable Long idRent){
+        rentService.delete(idRent);
+        return ResponseEntity.noContent().build();
     }
 }

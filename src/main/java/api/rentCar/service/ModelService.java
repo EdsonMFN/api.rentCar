@@ -3,7 +3,6 @@ package api.rentCar.service;
 import api.rentCar.domains.entity.Model;
 import api.rentCar.domains.model.ModelDto;
 import api.rentCar.domains.repository.RepositoryModel;
-import api.rentCar.domains.repository.RepositoryVehicle;
 import api.rentCar.exceptions.handlers.HandlerDataIntegrityViolationException;
 import api.rentCar.exceptions.handlers.HandlerEntitydadeNotFoundException;
 import api.rentCar.exceptions.handlers.HandlerErrorException;
@@ -20,8 +19,6 @@ import java.util.List;
 public class ModelService {
     @Autowired
     private RepositoryModel repositoryModel;
-    @Autowired
-    private RepositoryVehicle repositoryVehicle;
 
     public ResponseModel createValueVehicle(RequestModel requestModel){
 
@@ -93,16 +90,12 @@ public class ModelService {
             throw new HandlerErrorException(ex.getMessage());
         }
     }
-    public ResponseModel delete(Long idModel){
+    public void delete(Long idModel){
 
             Model model = repositoryModel.findById(idModel)
                     .orElseThrow(() -> new HandlerEntitydadeNotFoundException("entity with id "+ idModel+" not found"));
             try {
             repositoryModel.deleteById(model.getId());
-
-            ResponseModel responseModel = new ResponseModel();
-
-            return responseModel;
 
         }catch (DataIntegrityViolationException ex){
             throw new HandlerDataIntegrityViolationException(ex.getMessage());
