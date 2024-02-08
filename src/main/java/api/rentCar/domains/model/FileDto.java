@@ -14,5 +14,5 @@ public class FileDto {
 
     private Long id;
     private TypeFile typeFile;
-    private String Base64;
+    private String base64;
 }

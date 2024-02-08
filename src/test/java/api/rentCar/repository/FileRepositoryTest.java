@@ -1,4 +1,4 @@
-package api.rentCar.controlles;
+package api.rentCar.repository;
 
 import api.rentCar.domains.entity.File;
 import api.rentCar.domains.model.FileDto;
@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(FileContoller.class)
-public class FileControllerTest {
+public class FileRepositoryTest {
 
     @MockBean
     private FileService service;

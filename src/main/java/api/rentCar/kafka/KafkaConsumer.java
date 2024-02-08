@@ -19,7 +19,6 @@ public class KafkaConsumer {
     @KafkaListener(topics = "test.kafka2",groupId = "api.rentCar.group.consumer")
     public void consumer(String json, @Header(KafkaHeaders.OFFSET) Long offset){
 
-//        log.info("--> Consumindo fila. Topico: {} - Grupo: {} .", topicKafka, groupIdKafka );
         log.info("kafkaConsumer received. Offset: {}  - payload: {} ", offset, json);
 
         RentDto rent = null;

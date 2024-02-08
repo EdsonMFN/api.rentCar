@@ -32,7 +32,7 @@ public class FileService {
                 .builder()
                 .id(fileXlsx.getId())
                 .typeFile(fileXlsx.getTypeFile())
-                .Base64(fileXlsx.getBase64())
+                .base64(fileXlsx.getBase64())
                 .build());
     }
     private String base64(File file, List<Rent> rents){

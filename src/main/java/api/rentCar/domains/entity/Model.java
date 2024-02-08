@@ -32,4 +32,10 @@ public class Model {
     @Column(name = "category", nullable = false)
     private Category category;
 
+    public Model(String model, Integer modelYear, String fabricator, Category category) {
+        this.model = model;
+        this.modelYear = modelYear;
+        this.fabricator = fabricator;
+        this.category = category;
+    }
 }

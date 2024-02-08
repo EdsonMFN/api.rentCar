@@ -1,7 +1,6 @@
 package api.rentCar.domains.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -42,4 +41,6 @@ public class Vehicle implements Serializable {
         this.model = model;
         this.plate = plate;
     }
+
+
 }
