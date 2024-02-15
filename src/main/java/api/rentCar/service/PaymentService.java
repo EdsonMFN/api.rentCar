@@ -9,15 +9,14 @@ import api.rentCar.domains.repository.RepositoryPayment;
 import api.rentCar.domains.repository.RepositoryRent;
 import api.rentCar.domains.repository.RepositoryVehicle;
 import api.rentCar.exceptions.handlers.HandlerDataIntegrityViolationException;
-import api.rentCar.exceptions.handlers.HandlerEntitydadeNotFoundException;
+import api.rentCar.exceptions.handlers.HandlerEntityNotFoundException;
 import api.rentCar.exceptions.handlers.HandlerErrorException;
-import api.rentCar.rest.request.RequestPayment;
+import api.rentCar.rest.request.TypesToSearch;
 import api.rentCar.rest.response.ResponsePayment;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,15 +37,11 @@ public class PaymentService {
     @Autowired
     private KafkaTemplate<String,String> kafkaTemplate;
 
-    public ResponsePayment createPayment(RequestPayment requestPayment, Long idRent){
-
+    public ResponsePayment createPayment(PaymentDto request, Long idRent){
         Rent rent = repositoryRent.findById(idRent)
-                .orElseThrow(() -> new HandlerEntitydadeNotFoundException("entity with id "+ idRent +" not found"));
+                .orElseThrow(() -> new HandlerEntityNotFoundException("entity with id "+ idRent +" not found"));
         try {
-            Payment payment = new Payment();
-            payment.setType(requestPayment.getType());
-            payment.setStatus(requestPayment.getStatus());
-            payment.setPayday(requestPayment.getPayday());
+            Payment payment = new Payment(request);
             payment.setRent(rent);
             repositoryPayment.save(payment);
 
@@ -57,10 +52,7 @@ public class PaymentService {
 
             this.kafkaTemplate.send("test.kafka2",stringPayment);
 //            Produzir conteudo pro kafka
-            RentDto rentDto = RentDto.builder()
-                    .id(rent.getId())
-                    .rentAmount(rent.getRentAmount())
-                    .build();
+            RentDto rentDto = new RentDto(rent);
 
             return new ResponsePayment(PaymentDto.builder()
                     .id(payment.getId())
@@ -74,40 +66,40 @@ public class PaymentService {
         throw new HandlerErrorException(ex.getMessage());
     }
     }
-    public List<ResponsePayment> listPayment(){
-    try {
-        List <Payment> payments = repositoryPayment.findAll();
-        List<ResponsePayment> responsePayments = new ArrayList<>();
+    public List<ResponsePayment> listPayment(TypesToSearch filter){
+        try {
+            List <Payment> payments = repositoryPayment.findAll();
+            List<ResponsePayment> responsePayments = new ArrayList<>();
 
+            payments.stream().filter(payment ->
+                            payment.getId().equals(filter.getId()) ||
+                            payment.getPayday().equals(filter.getDate()) ||
+                            payment.getStatus().equals(filter.getStatus())
+                    )
+                    .forEach( payment -> {
 
-        payments.forEach( payment -> {
+                var rent = payment.getRent();
 
-            var rent = payment.getRent();
+                RentDto rentDto = new RentDto(rent);
 
-            RentDto rentDto = RentDto.builder()
-                    .id(rent.getId())
-                    .rentAmount(rent.getRentAmount())
-                    .build();
+                ResponsePayment responsePayment = new ResponsePayment(PaymentDto.builder()
+                        .id(payment.getId())
+                        .rentDto(rentDto)
+                        .status(payment.getStatus())
+                        .payday(payment.getPayday())
+                        .type(payment.getType())
+                        .build());
 
-            ResponsePayment responsePayment = new ResponsePayment(PaymentDto
-                    .builder()
-                    .id(payment.getId())
-                    .rentDto(rentDto)
-                    .status(payment.getStatus())
-                    .payday(payment.getPayday())
-                    .type(payment.getType())
-                    .build());
-
-            responsePayments.add(responsePayment);
-        });
-        return responsePayments;
-    }catch (Exception ex){
-        throw new HandlerErrorException(ex.getMessage());
-    }
+                responsePayments.add(responsePayment);
+            });
+            return responsePayments;
+        }catch (Exception ex){
+            throw new HandlerErrorException(ex.getMessage());
+        }
     }
     public void delete(Long idPayment){
         Payment payment = repositoryPayment.findById(idPayment)
-                .orElseThrow(() -> new HandlerEntitydadeNotFoundException("entity with id "+ idPayment+" not found"));
+                .orElseThrow(() -> new HandlerEntityNotFoundException("entity with id "+ idPayment+" not found"));
        try {
            repositoryPayment.deleteById(payment.getId());
 

@@ -1,6 +1,6 @@
 package api.rentCar.rest.controller;
 
-import api.rentCar.rest.request.RequestModel;
+import api.rentCar.domains.model.ModelDto;
 import api.rentCar.rest.response.ResponseModel;
 import api.rentCar.service.ModelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +16,8 @@ public class ModelController {
     private ModelService modelService;
 
     @PostMapping
-    public ResponseEntity<ResponseModel> createVehicle(@RequestBody RequestModel requestModel){
-        ResponseModel responseModel = modelService.createValueVehicle(requestModel);
+    public ResponseEntity<ResponseModel> createVehicle(@RequestBody ModelDto request){
+        ResponseModel responseModel = modelService.createValueVehicle(request);
         return ResponseEntity.ok(responseModel);
     }
     @GetMapping
@@ -26,8 +26,8 @@ public class ModelController {
         return ResponseEntity.ok(responseVehicles);
     }
     @PutMapping("/{idModel}")
-    public ResponseEntity<ResponseModel> updateModel(@RequestBody RequestModel requestModel, @PathVariable Long idModel){
-        ResponseModel responseModel = modelService.updateModel(requestModel,idModel);
+    public ResponseEntity<ResponseModel> updateModel(@RequestBody ModelDto request, @PathVariable Long idModel){
+        ResponseModel responseModel = modelService.updateModel(request,idModel);
         return ResponseEntity.ok(responseModel);
     }
     @DeleteMapping("/{idModel}")

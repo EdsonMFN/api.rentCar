@@ -1,7 +1,7 @@
 package api.rentCar.exceptions;
 
 import api.rentCar.exceptions.handlers.HandlerDataIntegrityViolationException;
-import api.rentCar.exceptions.handlers.HandlerEntitydadeNotFoundException;
+import api.rentCar.exceptions.handlers.HandlerEntityNotFoundException;
 import api.rentCar.rest.response.ResponseError;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import lombok.extern.slf4j.Slf4j;
@@ -41,8 +41,8 @@ public class ErrorHandling extends ResponseEntityExceptionHandler {
         return buildErrorResponse(ex.getMessage(),HttpStatus.BAD_REQUEST,"Request invalid");
     }
 
-    @ExceptionHandler(HandlerEntitydadeNotFoundException.class)
-    public ResponseEntity<Object> handlerEntityNotFoundException(HandlerEntitydadeNotFoundException ex){
+    @ExceptionHandler(HandlerEntityNotFoundException.class)
+    public ResponseEntity<Object> handlerEntityNotFoundException(HandlerEntityNotFoundException ex){
 
         log.error("Entity not found", ex.getCause());
         logError(ex);

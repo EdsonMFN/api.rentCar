@@ -13,8 +13,8 @@ public enum Category {
     PICKUP(4, "Pickup"),
     SEDAN(5, "Sedan");
 
-    private Integer id;
-    private String desciption;
+    private final Integer id;
+    private final String desciption;
 
      Category(Integer id, String desciption) {
         this.id = id;

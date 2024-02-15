@@ -7,7 +7,7 @@ import api.rentCar.domains.model.VehicleDto;
 import api.rentCar.domains.repository.RepositoryModel;
 import api.rentCar.domains.repository.RepositoryVehicle;
 import api.rentCar.enums.Category;
-import api.rentCar.exceptions.handlers.HandlerEntitydadeNotFoundException;
+import api.rentCar.exceptions.handlers.HandlerEntityNotFoundException;
 import api.rentCar.rest.request.RequestModel;
 import api.rentCar.rest.response.ResponseModel;
 import api.rentCar.rest.response.ResponseVehicle;
@@ -118,12 +118,12 @@ public class ModelServiceTest {
     void deveExecutarHandlerEntityNotFoundExceptionNoUpdateModel(){
 
         when(repositoryModel.findById(model.getId()))
-                .thenThrow(new HandlerEntitydadeNotFoundException("entity with id "+ model.getId() +" not found"));
+                .thenThrow(new HandlerEntityNotFoundException("entity with id "+ model.getId() +" not found"));
         try {
             ResponseModel responseModel1 = modelService.updateModel(requestModel,model.getId());
 
-        }catch (HandlerEntitydadeNotFoundException ex){
-            assertEquals(HandlerEntitydadeNotFoundException.class,ex.getClass());
+        }catch (HandlerEntityNotFoundException ex){
+            assertEquals(HandlerEntityNotFoundException.class,ex.getClass());
             assertEquals("entity with id "+ model.getId() +" not found",ex.getMessage());
         }
     }

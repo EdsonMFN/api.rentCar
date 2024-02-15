@@ -1,6 +1,6 @@
 package api.rentCar.rest.request;
 
-import api.rentCar.domains.model.ModelDto;
+import api.rentCar.enums.ColorVehicle;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,4 +12,7 @@ public class RequestVehicle {
 
     private Long id;
     private String plate;
+    private ColorVehicle color;
+    private int mileage;
+    private String photo;
 }

@@ -1,30 +1,29 @@
 package api.rentCar.service;
 
 import api.rentCar.domains.entity.Rent;
+import api.rentCar.domains.entity.User;
 import api.rentCar.domains.entity.Vehicle;
 import api.rentCar.domains.model.ModelDto;
 import api.rentCar.domains.model.RentDto;
 import api.rentCar.domains.model.VehicleDto;
-import api.rentCar.domains.repository.RepositoryModel;
 import api.rentCar.domains.repository.RepositoryRent;
+import api.rentCar.domains.repository.RepositoryUser;
 import api.rentCar.domains.repository.RepositoryVehicle;
 import api.rentCar.exceptions.handlers.HandlerDataIntegrityViolationException;
-import api.rentCar.exceptions.handlers.HandlerEntitydadeNotFoundException;
+import api.rentCar.exceptions.handlers.HandlerEntityNotFoundException;
 import api.rentCar.exceptions.handlers.HandlerErrorException;
-import api.rentCar.rest.request.RequestRent;
+import api.rentCar.rest.request.TypesToSearch;
 import api.rentCar.rest.response.ResponseRent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -33,52 +32,34 @@ public class RentService {
     @Autowired
     private RepositoryVehicle repositoryVehicle;
     @Autowired
-    private RepositoryModel repositoryModel;
-    @Autowired
     private RepositoryRent repositoryRent;
+    @Autowired
+    private RepositoryUser repositoryUser;
     @Autowired
     private KafkaTemplate<String,String> kafkaTemplate;
 
-    public ResponseRent createRent(RequestRent requestRent, String plate){
+    public ResponseRent createRent(RentDto request,Long idUser, String plate){
 
         try {
+            User user = repositoryUser.findById(idUser)
+                    .orElseThrow(()-> new HandlerEntityNotFoundException("Entity with id" + idUser + " not found"));
             Vehicle vehicle = repositoryVehicle.findByPlate(plate);
 
-            Rent rent = new Rent();
+            Rent rent = new Rent(request);
             rent.setVehicle(vehicle);
-            rent.setDateWithdrawal(requestRent.getDateWithdrawal());
-            rent.setDateDelivery(requestRent.getDateDelivery());
-            rent.setValueWeekday(requestRent.getValueWeekday());
-            rent.setValueWeekenday(requestRent.getValueWeekenday());
             rent.setRentAmount(rentValueTotal(rent.getValueWeekday(), rent.getValueWeekenday(), rent.getDateWithdrawal(), rent.getDateDelivery()));
+            rent.setUser(user);
             repositoryRent.save(rent);
-
 
             var model = vehicle.getModel();
 
-            ModelDto modelDto = ModelDto.builder()
-                    .id(model.getId())
-                    .model(model.getModel())
-                    .modelYear(model.getModelYear())
-                    .fabricator(model.getFabricator())
-                    .category(model.getCategory())
-                    .build();
+            ModelDto modelDto = new ModelDto(model);
 
-            VehicleDto vehicleDto = VehicleDto.builder()
-                    .id(vehicle.getId())
-                    .modelDto(modelDto)
-                    .plate(vehicle.getPlate())
-                    .build();
+            VehicleDto vehicleDto = new VehicleDto(vehicle);
+            vehicleDto.setModelDto(modelDto);
 
-            RentDto rentDto = RentDto.builder()
-                    .id(rent.getId())
-                    .dateWithdrawal(String.valueOf(rent.getDateWithdrawal()))
-                    .dateDelivery(String.valueOf(rent.getDateDelivery()))
-                    .valueWeekday(rent.getValueWeekday())
-                    .valueWeekenday(rent.getValueWeekenday())
-                    .vehicleDto(vehicleDto)
-                    .rentAmount(rent.getRentAmount())
-                    .build();
+            RentDto rentDto = new RentDto(rent);
+            rentDto.setVehicleDto(vehicleDto);
 
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
@@ -86,33 +67,26 @@ public class RentService {
             var stringRent = objectMapper.writeValueAsString(rentDto);
 
             this.kafkaTemplate.send("test.kafka2",stringRent);
-            //Produzir conteudo pro kafka
+//            //Produzir conteudo pro kafka
 
-            ResponseRent responseRent = new ResponseRent();
-            responseRent.setRentDto(rentDto);
-
-
-            return responseRent;
+            return new ResponseRent(rentDto);
 
         }catch (Exception ex){
         throw new HandlerErrorException(ex.getMessage());
     }
     }
-    public List<ResponseRent> listVehicle(){
+    public List<ResponseRent> listVehicle(TypesToSearch filer){
     try {
         List <Rent> rents = repositoryRent.findAll();
         List<ResponseRent> responseRents = new ArrayList<>();
 
-        rents.forEach( rent -> {
+        rents.stream().filter(rent ->
+                        rent.getUser().getClient().getName().equals(filer.getName()) ||
+                        rent.getId().equals(filer.getId())
+                )
+                .forEach( rent -> {
 
-            ResponseRent responseRent = new ResponseRent (RentDto.builder()
-                    .id(rent.getId())
-                    .dateWithdrawal(String.valueOf(rent.getDateWithdrawal()))
-                    .dateDelivery(String.valueOf(rent.getDateDelivery()))
-                    .valueWeekday(rent.getValueWeekday())
-                    .valueWeekenday(rent.getValueWeekenday())
-                    .rentAmount(rent.getRentAmount())
-                    .build());
+            ResponseRent responseRent = new ResponseRent(new RentDto(rent));
 
             responseRents.add(responseRent);
         });
@@ -123,10 +97,9 @@ public class RentService {
     }
     public void delete(Long idRent){
         Rent rent = repositoryRent.findById(idRent)
-                .orElseThrow(() -> new HandlerEntitydadeNotFoundException("entity with id "+ idRent+" not found"));
+                .orElseThrow(() -> new HandlerEntityNotFoundException("Entity with id "+ idRent+" not found"));
        try {
            repositoryRent.deleteById(rent.getId());
-
        }catch (DataIntegrityViolationException ex){
         throw new HandlerDataIntegrityViolationException(ex.getMessage());
         }catch (Exception ex){
@@ -138,13 +111,13 @@ public class RentService {
         return dateWithdrawal.datesUntil(dateDelivery);
     }
 
-    private Integer rentValueTotal(int valueWeekday, int valueWeekenday, LocalDate dateWithdrawal, LocalDate dateDelivery) {
+    private int rentValueTotal(int valueWeekday, int valueWeekenday, LocalDate dateWithdrawal, LocalDate dateDelivery) {
 
         if (dateDelivery.isAfter(dateWithdrawal)){
 
-            Integer rentTotalAmount = 0;
+            int rentTotalAmount = 0;
 
-            List<LocalDate> quantityDaysRent = getQuantityDaysRent(dateWithdrawal, dateDelivery).collect(Collectors.toList());
+            List<LocalDate> quantityDaysRent = getQuantityDaysRent(dateWithdrawal, dateDelivery).toList();
 
             for (LocalDate dayRent: quantityDaysRent) {
                 DayOfWeek dayOfWeek = dayRent.getDayOfWeek();
@@ -158,7 +131,7 @@ public class RentService {
 
             return rentTotalAmount;
         }else {
-            throw new RuntimeException("the delivery date must be greater than the withdrawal date!");
+            throw new RuntimeException("The delivery date must be greater than the withdrawal date!");
         }
     }
 }

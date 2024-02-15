@@ -1,5 +1,6 @@
 package api.rentCar.domains.entity;
 
+import api.rentCar.domains.model.PaymentDto;
 import api.rentCar.enums.Status;
 import api.rentCar.enums.Type;
 import jakarta.persistence.*;
@@ -35,4 +36,11 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     @Column(name = "statusPayment",nullable = false)
     private Status status;
+
+    public Payment(PaymentDto paymentDto) {
+        this.rent = new Rent();
+        this.payday = paymentDto.getPayday();
+        this.type = paymentDto.getType();
+        this.status = paymentDto.getStatus();
+    }
 }

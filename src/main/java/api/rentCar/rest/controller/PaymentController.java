@@ -1,6 +1,6 @@
 package api.rentCar.rest.controller;
 
-import api.rentCar.rest.request.RequestPayment;
+import api.rentCar.domains.model.PaymentDto;
 import api.rentCar.rest.response.ResponsePayment;
 import api.rentCar.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,8 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @PostMapping("/rent/{idRent}")
-    public ResponseEntity<ResponsePayment> createVehicle(@RequestBody RequestPayment requestPayment, @PathVariable Long idRent){
-        ResponsePayment responsePayment = paymentService.createPayment(requestPayment, idRent);
+    public ResponseEntity<ResponsePayment> createVehicle(@RequestBody PaymentDto request, @PathVariable Long idRent){
+        ResponsePayment responsePayment = paymentService.createPayment(request, idRent);
         return ResponseEntity.ok(responsePayment);
     }
     @GetMapping

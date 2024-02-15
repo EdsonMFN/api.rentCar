@@ -6,7 +6,7 @@ import api.rentCar.domains.entity.Vehicle;
 import api.rentCar.domains.model.ModelDto;
 import api.rentCar.domains.model.VehicleDto;
 import api.rentCar.enums.Category;
-import api.rentCar.exceptions.handlers.HandlerEntitydadeNotFoundException;
+import api.rentCar.exceptions.handlers.HandlerEntityNotFoundException;
 import api.rentCar.rest.controller.VehicleController;
 import api.rentCar.rest.request.RequestVehicle;
 import api.rentCar.rest.response.ResponseVehicle;
@@ -116,7 +116,7 @@ public class VehicleControllerTest {
     @DisplayName("buscar todos por category")
     void listarByCategoryNotFoundVehicle()  throws Exception {
 
-        given(service.searchByCategory(model.getCategory().getId())).willThrow(HandlerEntitydadeNotFoundException.class);
+        given(service.searchByCategory(model.getCategory().getId())).willThrow(HandlerEntityNotFoundException.class);
 
         ResultActions response = mockMvc.perform(get("/vehicle/category/{category}", model.getCategory().getId()));
 

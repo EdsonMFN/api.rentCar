@@ -1,5 +1,6 @@
 package api.rentCar.rest.request;
 
+import api.rentCar.domains.entity.User;
 import api.rentCar.domains.model.VehicleDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,4 +18,6 @@ public class RequestRent {
     private LocalDate dateWithdrawal;
     private LocalDate dateDelivery;
     private Integer rentAmount;
+    private User user;
+
 }

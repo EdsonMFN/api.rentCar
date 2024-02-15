@@ -8,7 +8,7 @@ import api.rentCar.domains.repository.RepositoryModel;
 import api.rentCar.domains.repository.RepositoryVehicle;
 import api.rentCar.enums.Category;
 import api.rentCar.exceptions.handlers.HandlerDataIntegrityViolationException;
-import api.rentCar.exceptions.handlers.HandlerEntitydadeNotFoundException;
+import api.rentCar.exceptions.handlers.HandlerEntityNotFoundException;
 import api.rentCar.rest.request.RequestVehicle;
 import api.rentCar.rest.response.ResponseModel;
 import api.rentCar.rest.response.ResponseVehicle;
@@ -100,12 +100,12 @@ public class VehicleServiceTest {
             " houver o model")
     void deveExecutarHandlerEntityNotFoundExceptionNoCreateVehicle(){
 
-        when(repositoryModel.findByModel(model.getModel())).thenThrow(new HandlerEntitydadeNotFoundException("entity with name "+ model.getModel() +" not found"));
+        when(repositoryModel.findByModel(model.getModel())).thenThrow(new HandlerEntityNotFoundException("entity with name "+ model.getModel() +" not found"));
     try {
         ResponseVehicle responseVehicle = vehicleService.createVehicle(requestVehicle,model.getId());
 
-    }catch (HandlerEntitydadeNotFoundException ex){
-        assertEquals(HandlerEntitydadeNotFoundException.class,ex.getClass());
+    }catch (HandlerEntityNotFoundException ex){
+        assertEquals(HandlerEntityNotFoundException.class,ex.getClass());
         assertEquals("entity with name "+ model.getModel() +" not found",ex.getMessage());
     }
     }
@@ -143,11 +143,11 @@ public class VehicleServiceTest {
     void deveExecutarHandlerEntityNotFoundExceptionNaBuscaCategory(){
 
         when(repositoryModel.findAllByCategory(model.getCategory().getId()))
-                .thenThrow(new HandlerEntitydadeNotFoundException("entity with category "+ model.getCategory() +" not found"));
+                .thenThrow(new HandlerEntityNotFoundException("entity with category "+ model.getCategory() +" not found"));
         try {
             List<ResponseVehicle> responseVehicles1 = vehicleService.searchByCategory(model.getCategory().getId());
-        }catch (HandlerEntitydadeNotFoundException ex){
-            assertEquals(HandlerEntitydadeNotFoundException.class,ex.getClass());
+        }catch (HandlerEntityNotFoundException ex){
+            assertEquals(HandlerEntityNotFoundException.class,ex.getClass());
             assertEquals("entity with category " + model.getCategory() +" not found",ex.getMessage());
         }
     }
