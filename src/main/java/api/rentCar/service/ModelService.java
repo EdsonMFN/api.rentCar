@@ -20,7 +20,7 @@ public class ModelService {
     @Autowired
     private RepositoryModel repositoryModel;
 
-    public ResponseModel createValueVehicle(ModelDto request){
+    public ResponseModel createModel(ModelDto request){
         try {
             Model model = new Model(request);
             repositoryModel.save(model);
@@ -30,7 +30,7 @@ public class ModelService {
             throw new HandlerErrorException(ex.getMessage());
         }
     }
-    public List<ResponseModel> listVehicle(TypesToSearch filter){
+    public List<ResponseModel> filterModel(TypesToSearch filter){
         try {
             List <Model> models = repositoryModel.findAll();
             List<ResponseModel> responseModels = new ArrayList<>();

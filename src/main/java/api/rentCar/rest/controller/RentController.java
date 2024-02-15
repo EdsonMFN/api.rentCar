@@ -1,6 +1,7 @@
 package api.rentCar.rest.controller;
 
 import api.rentCar.domains.model.RentDto;
+import api.rentCar.rest.request.TypesToSearch;
 import api.rentCar.rest.response.ResponseRent;
 import api.rentCar.service.RentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,8 @@ public class RentController {
         return ResponseEntity.status(HttpStatus.OK).body(responseRent);
     }
     @GetMapping
-    public ResponseEntity<List<ResponseRent>> listarAcademia(){
-        List<ResponseRent> responseRents = rentService.listVehicle();
+    public ResponseEntity<List<ResponseRent>> filerVehicle(@RequestBody TypesToSearch filter){
+        List<ResponseRent> responseRents = rentService.filerVehicle(filter);
         return ResponseEntity.ok(responseRents);
     }
     @DeleteMapping("/{idRent}")

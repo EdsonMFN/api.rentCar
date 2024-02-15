@@ -66,7 +66,7 @@ public class PaymentService {
         throw new HandlerErrorException(ex.getMessage());
     }
     }
-    public List<ResponsePayment> listPayment(TypesToSearch filter){
+    public List<ResponsePayment> filterPayment(TypesToSearch filter){
         try {
             List <Payment> payments = repositoryPayment.findAll();
             List<ResponsePayment> responsePayments = new ArrayList<>();

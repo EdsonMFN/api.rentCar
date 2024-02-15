@@ -1,6 +1,7 @@
 package api.rentCar.rest.controller;
 
 import api.rentCar.domains.model.ModelDto;
+import api.rentCar.rest.request.TypesToSearch;
 import api.rentCar.rest.response.ResponseModel;
 import api.rentCar.service.ModelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +18,12 @@ public class ModelController {
 
     @PostMapping
     public ResponseEntity<ResponseModel> createVehicle(@RequestBody ModelDto request){
-        ResponseModel responseModel = modelService.createValueVehicle(request);
+        ResponseModel responseModel = modelService.createModel(request);
         return ResponseEntity.ok(responseModel);
     }
     @GetMapping
-    public ResponseEntity<List<ResponseModel>> listarAcademia(){
-        List<ResponseModel> responseVehicles = modelService.listVehicle();
+    public ResponseEntity<List<ResponseModel>> listarAcademia(@RequestBody TypesToSearch filter){
+        List<ResponseModel> responseVehicles = modelService.filterModel(filter);
         return ResponseEntity.ok(responseVehicles);
     }
     @PutMapping("/{idModel}")

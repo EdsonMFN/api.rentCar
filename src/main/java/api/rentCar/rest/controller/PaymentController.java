@@ -1,6 +1,7 @@
 package api.rentCar.rest.controller;
 
 import api.rentCar.domains.model.PaymentDto;
+import api.rentCar.rest.request.TypesToSearch;
 import api.rentCar.rest.response.ResponsePayment;
 import api.rentCar.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,8 @@ public class PaymentController {
         return ResponseEntity.ok(responsePayment);
     }
     @GetMapping
-    public ResponseEntity<List<ResponsePayment>> listarAcademia(){
-        List<ResponsePayment> responsePaymentList = paymentService.listPayment();
+    public ResponseEntity<List<ResponsePayment>> listarAcademia(@RequestBody TypesToSearch filter){
+        List<ResponsePayment> responsePaymentList = paymentService.filterPayment(filter);
         return ResponseEntity.ok(responsePaymentList);
     }
     @DeleteMapping("/{idPayment}")

@@ -75,7 +75,7 @@ public class RentService {
         throw new HandlerErrorException(ex.getMessage());
     }
     }
-    public List<ResponseRent> listVehicle(TypesToSearch filer){
+    public List<ResponseRent> filerVehicle(TypesToSearch filer){
     try {
         List <Rent> rents = repositoryRent.findAll();
         List<ResponseRent> responseRents = new ArrayList<>();
