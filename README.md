@@ -8,6 +8,5 @@ Aplicação de sistema de aluguel de carros.
 - Kafka;
 - JavaMail, envio de e-mails;
 - MySql;
-- H2;
 - JPA/Hibernate;
-- Testes Unitários.
+- Testes Unitários (Service e Controlles).
